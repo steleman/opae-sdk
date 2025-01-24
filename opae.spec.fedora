@@ -9,40 +9,35 @@ ExclusiveArch:  x86_64
 
 Group:          Development/Libraries
 Vendor:         Intel Corporation
-Requires:  uuid
-Requires:  json-c
-Requires:  python3
-Requires:  systemd
-Requires:  tbb
-Requires:  hwloc
-Requires:  spdlog
-Requires:  libedit
 
 URL:            https://github.com/OPAE/%{name}-sdk
 Source0:        https://github.com/OPAE/opae-sdk/releases/download/%{version}-%{opae_release}/%{name}-%{version}-%{opae_release}.tar.gz
 
 
-BuildRequires:  make
+BuildRequires:  cli11-devel
 BuildRequires:  cmake
-BuildRequires:  git
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
+BuildRequires:  git
+BuildRequires:  hwloc-devel
 BuildRequires:  json-c-devel
+BuildRequires:  libedit-devel
 BuildRequires:  libuuid-devel
+BuildRequires:  make
+BuildRequires:  numactl-devel
+BuildRequires:  pybind11-devel
 BuildRequires:  python3-devel
 BuildRequires:  python3-jsonschema
 BuildRequires:  python3-pip
-BuildRequires:  python3-setuptools
-BuildRequires:  python3-pyyaml
 BuildRequires:  python3-pybind11
+BuildRequires:  python3-pyyaml
+BuildRequires:  python3-setuptools
+BuildRequires:  python3-wheel
 BuildRequires:  rpm-build
-BuildRequires:  systemd-devel
-BuildRequires:  tbb-devel
-BuildRequires:  hwloc-devel
-BuildRequires:  pybind11-devel
-BuildRequires:  cli11-devel
 BuildRequires:  spdlog-devel
-BuildRequires:  libedit-devel
+BuildRequires:  systemd-devel
+BuildRequires:  systemd-rpm-macros
+BuildRequires:  tbb-devel
 
 
 %description
@@ -95,6 +90,17 @@ Additional OPAE tools
        -DOPAE_BUILD_PYTHON_DIST=ON \
        -DOPAE_BUILD_FPGABIST=ON
 
+# Tell pip install to use pre-installed build dependencies, instead of
+# trying to download and install the build dependencies, which fails
+# when building without network access, e.g., using Fedora's mock.
+#
+# https://github.com/OFS/meta-ofs/issues/1
+# https://pip.pypa.io/en/stable/cli/pip_install/#cmdoption-no-build-isolation
+#
+# PIP_NO_CACHE_DIR and PIP_NO_BUILD_ISOLATION behave opposite to how they read
+# https://github.com/pypa/pip/issues/5735
+export PIP_NO_BUILD_ISOLATION=off
+
 %if 0%{?rhel}
 %if 0%{rhel} <= 8
   echo "Building for RHEL <= 8"
@@ -119,6 +125,8 @@ mkdir -p %{buildroot}%{_datadir}/opae
 cp RELEASE_NOTES.md %{buildroot}%{_datadir}/opae/RELEASE_NOTES.md
 cp LICENSE %{buildroot}%{_datadir}/opae/LICENSE
 cp COPYING %{buildroot}%{_datadir}/opae/COPYING
+
+export PIP_NO_BUILD_ISOLATION=off
 
 mkdir -p %{buildroot}%{_usr}/src/opae/cmake/modules
 mkdir -p %{buildroot}%{_usr}/src/opae/samples
@@ -155,16 +163,16 @@ for file in %{buildroot}%{_usr}/src/opae/cmake/modules/*; do
    chmod a+x $file
 done
 
-%{__python3} -m pip install --prefix=/usr --root=%{buildroot} %{_topdir}/BUILD/%{name}-%{version}-build/%{name}-%{version}-%{opae_release}/%__cmake_builddir/binaries/opae.io/stage
-%{__python3} -m pip install --prefix=/usr --root=%{buildroot} %{_topdir}/BUILD/%{name}-%{version}-build/%{name}-%{version}-%{opae_release}/binaries/hssi
-%{__python3} -m pip install --prefix=/usr --root=%{buildroot} %{_topdir}/BUILD/%{name}-%{version}-build/%{name}-%{version}-%{opae_release}/%__cmake_builddir/binaries/fpgadiag/stage
-%{__python3} -m pip install --prefix=/usr --root=%{buildroot} %{_topdir}/BUILD/%{name}-%{version}-build/%{name}-%{version}-%{opae_release}/%__cmake_builddir/libraries/pyopae/stage
-%{__python3} -m pip install --prefix=/usr --root=%{buildroot} %{_topdir}/BUILD/%{name}-%{version}-build/%{name}-%{version}-%{opae_release}/%__cmake_builddir/libraries/pyopaeuio/stage
-%{__python3} -m pip install --prefix=/usr --root=%{buildroot} %{_topdir}/BUILD/%{name}-%{version}-build/%{name}-%{version}-%{opae_release}/python/opae.admin
-%{__python3} -m pip install --prefix=/usr --root=%{buildroot} %{_topdir}/BUILD/%{name}-%{version}-build/%{name}-%{version}-%{opae_release}/python/pacsign
-%{__python3} -m pip install --prefix=/usr --root=%{buildroot} %{_topdir}/BUILD/%{name}-%{version}-build/%{name}-%{version}-%{opae_release}/python/packager
-%{__python3} -m pip install --prefix=/usr --root=%{buildroot} %{_topdir}/BUILD/%{name}-%{version}-build/%{name}-%{version}-%{opae_release}/binaries/ofs.uio
-%{__python3} -m pip install --prefix=/usr --root=%{buildroot} %{_topdir}/BUILD/%{name}-%{version}-build/%{name}-%{version}-%{opae_release}/platforms
+#%{__python3} -m pip install --prefix=/usr --root=%{buildroot} %{_topdir}/BUILD/%{name}-%{version}-build/%{name}-%{version}-%{opae_release}/%__cmake_builddir/binaries/opae.io/stage
+#%{__python3} -m pip install --prefix=/usr --root=%{buildroot} %{_topdir}/BUILD/%{name}-%{version}-build/%{name}-%{version}-%{opae_release}/binaries/hssi
+#%{__python3} -m pip install --prefix=/usr --root=%{buildroot} %{_topdir}/BUILD/%{name}-%{version}-build/%{name}-%{version}-%{opae_release}/%__cmake_builddir/binaries/fpgadiag/stage
+#%{__python3} -m pip install --prefix=/usr --root=%{buildroot} %{_topdir}/BUILD/%{name}-%{version}-build/%{name}-%{version}-%{opae_release}/%__cmake_builddir/libraries/pyopae/stage
+#%{__python3} -m pip install --prefix=/usr --root=%{buildroot} %{_topdir}/BUILD/%{name}-%{version}-build/%{name}-%{version}-%{opae_release}/%__cmake_builddir/libraries/pyopaeuio/stage
+#%{__python3} -m pip install --prefix=/usr --root=%{buildroot} %{_topdir}/BUILD/%{name}-%{version}-build/%{name}-%{version}-%{opae_release}/python/opae.admin
+#%{__python3} -m pip install --prefix=/usr --root=%{buildroot} %{_topdir}/BUILD/%{name}-%{version}-build/%{name}-%{version}-%{opae_release}/python/pacsign
+#%{__python3} -m pip install --prefix=/usr --root=%{buildroot} %{_topdir}/BUILD/%{name}-%{version}-build/%{name}-%{version}-%{opae_release}/python/packager
+#%{__python3} -m pip install --prefix=/usr --root=%{buildroot} %{_topdir}/BUILD/%{name}-%{version}-build/%{name}-%{version}-%{opae_release}/binaries/ofs.uio
+#%{__python3} -m pip install --prefix=/usr --root=%{buildroot} %{_topdir}/BUILD/%{name}-%{version}-build/%{name}-%{version}-%{opae_release}/platforms
 
 # Make rpmlint happy about install permissions
 # admin tools
