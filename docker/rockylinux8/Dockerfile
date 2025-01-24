@@ -14,6 +14,7 @@ RUN python3 -m pip install --user jsonschema virtualenv pudb pyyaml pybind11 && 
     # similar to setuptools, it has been found to fail when only affecting /usr/local
     /usr/bin/python3 -m pip install --upgrade pip --prefix=/usr
 
+RUN git config --system safe.directory '*'
 WORKDIR /root
 
 COPY scripts/test-rpms.sh /scripts/test-rpms.sh
