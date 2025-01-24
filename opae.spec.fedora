@@ -1,18 +1,17 @@
-%define         opae_release @RELEASE@
-
 Summary:        Open Programmable Acceleration Engine (OPAE) SDK
 Name:           opae
-Version:        @VERSION@
-Release:        %{opae_release}%{?dist}
-License:        BSD
-ExclusiveArch:  x86_64
-
-Group:          Development/Libraries
 Vendor:         Intel Corporation
+License:        BSD
+
+Version:        @VERSION@
+%define opae_release @RELEASE@
+Release:        %{opae_release}%{?dist}
 
 URL:            https://github.com/OPAE/%{name}-sdk
-Source0:        https://github.com/OPAE/opae-sdk/releases/download/%{version}-%{opae_release}/%{name}-%{version}-%{opae_release}.tar.gz
+Source0:        https://github.com/OPAE/opae-sdk/archive/refs/tags/%{version}-%{opae_release}.tar.gz
 
+Group:          Development/Libraries
+ExclusiveArch:  x86_64
 
 BuildRequires:  cli11-devel
 BuildRequires:  cmake
@@ -46,9 +45,9 @@ for managing and accessing programmable accelerators (FPGAs).
 Its main parts are:
 
 * OPAE Software Development Kit (OPAE SDK) (this package)
-* OPAE Linux driver for Intel(R) Xeon(R) CPU with
-  Integrated FPGAs and Intel(R) PAC with Arria(R) 10 GX FPGA
-* Basic Building Block (BBB) library for accelerating AFU
+* OPAE Linux driver for Intel(R) PAC with Arria(R) 10 GX FPGA
+* Intel(R) PAC N6000/D5005, Silicom FPGA SmartNIC N5010 Series,
+* Intel FPGA Programmable Acceleration Card N6000
 
 OPAE SDK is a collection of libraries and tools to facilitate the
 development of software applications and accelerators using OPAE.
@@ -72,7 +71,8 @@ Summary:    Additional OPAE tools
 Requires:   opae-devel
 
 %description extra-tools
-Additional OPAE tools
+This package contains OPAE extra tools binaries, 
+software tools for accelerators
 
 
 %{?python_disable_dependency_generator}
@@ -81,7 +81,7 @@ Additional OPAE tools
 
 
 %prep
-%setup -q -n %{name}-%{version}-%{opae_release}
+%setup -q -n %{name}-sdk-%{version}-%{opae_release}
 
 %build
 %cmake -DCMAKE_INSTALL_PREFIX=/usr \
