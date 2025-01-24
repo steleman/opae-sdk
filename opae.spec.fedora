@@ -100,25 +100,8 @@ software tools for accelerators
 # PIP_NO_CACHE_DIR and PIP_NO_BUILD_ISOLATION behave opposite to how they read
 # https://github.com/pypa/pip/issues/5735
 export PIP_NO_BUILD_ISOLATION=off
+%cmake_build
 
-%if 0%{?rhel}
-%if 0%{rhel} <= 8
-  echo "Building for RHEL <= 8"
-  %{?!__cmake_builddir: %global __cmake_builddir %{?__builddir}%{!?__builddir:.}}
-  %make_build
-%else
-  echo "Building for RHEL >= 9"
-  %cmake_build
-%endif
-%else
-  echo "Building for non-RHEL"
-  %cmake_build
-%endif
-
-%if 0%{?suse_version} > 0
-  echo "Building for openSUSE"
-  %{?!__cmake_builddir: %global __cmake_builddir %{?__builddir}%{!?__builddir:.}}
-%endif
 
 %install
 mkdir -p %{buildroot}%{_datadir}/opae
