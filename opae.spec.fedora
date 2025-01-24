@@ -154,39 +154,38 @@ cp samples/n5010-test/n5010-test.c %{buildroot}%{_usr}/src/opae/samples/n5010-te
   %cmake_install
 %endif
 
-#cmake
-for file in %{buildroot}%{_usr}/lib/opae*/modules/*; do
-   chmod a+x $file
-done
-
-for file in %{buildroot}%{_usr}/src/opae/cmake/modules/*; do
-   chmod a+x $file
-done
-
 # Make rpmlint happy about install permissions
-# admin tools
+
 for file in %{buildroot}%{python3_sitelib}/opae/admin/tools/{fpgaflash,fpgaotsu,fpgaport,fpgasupdate,ihex2ipmi,rsu,super_rsu,bitstream_info,opaevfio,pci_device,fpgareg,n5010tool}.py; do
    chmod a+x $file
 done
-# ethernet
+
 for file in %{buildroot}%{python3_sitelib}/ethernet/{hssicommon,hssiloopback,hssimac,hssistats}.py; do
    chmod a+x $file
 done
-# diag
+
 for file in %{buildroot}%{python3_sitearch}/opae/diag/{common,fecmode,fpgadiag,fpgalpbk,fpgamac,fpgastats,fvlbypass,mactest,mux}.py; do
    chmod a+x $file
 done
 
-# packager
+for file in %{buildroot}%{python3_sitearch}/opae/fpga/tools/opae_mem.py; do
+   chmod a+x $file
+done
+
 for file in %{buildroot}%{python3_sitelib}/packager/tools/{afu_json_mgr,packager}.py; do
    chmod a+x $file
 done
 
-# opae.uio
+for file in %{buildroot}%{python3_sitelib}/platmgr/tools/{afu_platform_config,afu_platform_info,afu_synth_setup,rtl_src_config}.py; do
+   chmod a+x $file
+done
+
 for file in %{buildroot}%{python3_sitelib}/uio/ofs_uio.py; do
    chmod a+x $file
 done
 
+chmod a+x %{buildroot}%{_usr}/src/opae/cmake/modules/*.cmake
+chmod a+x %{buildroot}%{_usr}/lib/opae-%{version}/modules/*.cmake
 
 %files
 %dir %{_datadir}/opae
