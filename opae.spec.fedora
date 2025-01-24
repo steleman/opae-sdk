@@ -8,7 +8,7 @@ Version:        @VERSION@
 Release:        %{opae_release}%{?dist}
 
 URL:            https://github.com/OPAE/%{name}-sdk
-Source0:        https://github.com/OPAE/opae-sdk/archive/refs/tags/%{version}-%{opae_release}.tar.gz
+Source0:        https://github.com/OPAE/opae-sdk/releases/download/%{version}-%{opae_release}/%{name}-%{version}-%{opae_release}.tar.gz
 
 Group:          Development/Libraries
 ExclusiveArch:  x86_64
