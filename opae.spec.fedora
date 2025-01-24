@@ -75,11 +75,6 @@ This package contains OPAE extra tools binaries,
 software tools for accelerators
 
 
-%{?python_disable_dependency_generator}
-# Workaround a problem with pybind11 *.so not having build-id's
-%undefine _missing_build_ids_terminate_build
-
-
 %prep
 %setup -q -n %{name}-%{version}-%{opae_release}
 
